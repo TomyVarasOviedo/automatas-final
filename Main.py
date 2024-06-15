@@ -2,4 +2,4 @@ from AutomataComandos import AutomataComandos
 from AutomataParametros import AutomataParametros
 
 automata = AutomataParametros()
-print(automata.reconocerCadena("123 3445"))
+print(automata.reconocerCadena(" 12 15 ca"))
