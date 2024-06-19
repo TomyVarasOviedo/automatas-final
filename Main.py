@@ -8,14 +8,28 @@ def crearCirculo(parametros:str):
     Metodo para crear un circulo en la pantalla
     """
     parametros = parametros.split(" ")
-    turtle.circle(int(parametros[0]))
+    try:
+        circulo = turtle.circle(int(parametros[0]))
+        figuras[parametros[1]] =circulo
+    except KeyError as e:
+        print(e)
 
 def crearBox(parametros:str):
     """
     Metodo para crear un rectangulo en la pantalla
     """
     parametros = parametros.split(" ")
-    # turtle.
+    # Dibujando la caja
+    print(parametros)
+    # figuras[parametros[2]]=turtle.shape("square")
+    turtle.forward(int(parametros[0]))
+    turtle.left(90)
+    turtle.forward(int(parametros[1]))
+    turtle.left(90)
+    turtle.forward(int(parametros[0]))
+    turtle.left(90)
+    turtle.forward(int(parametros[1]))
+
 def reconocerCadena(cadena:str)->str:
     """
     Metodo para reconcer las cadenas enviadas atraves de la linea de comandos
@@ -39,10 +53,22 @@ def ejecutarComandos(cadena:str):
         comando = cadena.split(" ", 1) #comando[0]: accion, comando[1]: parametros
         match comando[0]:
             case "circle":
-                crearCirculo(comando[1])
+                if len(comando[1].split(" ")) == 2:
+                    crearCirculo(comando[1])
+                else:
+                    print("Parametros incorrectos para ese comando")
             case "box":
-                crearBox(comando[1])
+                if len(comando[1].split(" ")) == 3:
+                    crearBox(comando[1])
+                else:
+                    print("Parametros incorrectos para ese comando")
+            case "move":
+                if len(comando[1].split(" ")) == 3:
+                    crearBox(comando[1])
+                else:
+                    print("Parametros incorrectos para ese comando")
 # ----Funciones----
+figuras = {}
 
 print("""Comandos:
         > circle (radio:int) (nombre.ej: n,m)
