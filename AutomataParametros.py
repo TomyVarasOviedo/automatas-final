@@ -11,7 +11,7 @@ class AutomataParametros():
             nomb: Cualquier letra del alfabeto español
             z: Caracter de espacio
         """
-        self.Alfabeto ="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        self.Alfabeto ="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -"
         self.indicidencia={
             "q0":{
                 "z":"q1"
