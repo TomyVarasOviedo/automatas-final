@@ -1,4 +1,7 @@
 import turtle as turtle
+from AutomataComandos import AutomataComandos
+from AutomataParametros import AutomataParametros
+
 # Clase de las figuras que se van a realizar
 class Figuras:
     def __init__(self, nombre: str, forma: str, largo: int, ancho: int):
@@ -23,8 +26,8 @@ class Figuras:
 
 #Pantalla del turtle
 screen = turtle.Screen()
-screen.title("Dibujo de Figuras con Turtle")
-screen.bgcolor("white")
+screen.title("Figuras")
+screen.bgcolor("black")
 figuras = []
 
 #Buscar una figura en concreto
@@ -35,24 +38,14 @@ def buscar(nombre: str):
             return i
     return False
 
-#Funcion para decidir la forma de la figura
-def elegir():
-    while(True):
-        print(">> Que forma quiere que tenga?\n>> 1. Circulo.\n>> 2. Box")
-        ans = input(">> ")
-        if(ans == "1"):
-            forma = "circulo"
-            return forma
-        elif(ans == "2"):
-            forma = "box"
-            return forma
-        else:
-            print("No valido intente de nuevo.")
 #Funcion para dibujar todas las figuras contenidas en la lista figuras
 def drawAll():
     global figuras
     global screen
     screen.clearscreen()
+    screen.bgcolor('black')
+    turtle.color('cyan')
+    turtle.begin_fill()
     for i in figuras:
         turtle.penup()
         turtle.home()
@@ -70,56 +63,82 @@ def drawAll():
             turtle.right(90)
             turtle.forward(i.largo)
             turtle.right(90)
+    turtle.end_fill()
 
 nombre = ""
 forma = ""
 largo = ""
 ancho = ""
+def reconocer_cadena(cadena:str)->str:
+    """
+    Metodo para reconer la cadena ingresada atraves de los automatas
+    """
+    cadenaModificada = cadena.split(" ", 1)
+    comandos = AutomataComandos()
+    parametros = AutomataParametros()
+    try:
+        if comandos.reconocerCadena(cadenaModificada[0]) == "aceptada":
+            if parametros.reconocerCadena(" "+cadenaModificada[1]) == "aceptada":
+                return "aceptada"
+            else:
+                return "parametros: rechzados"
+        else:
+            return "comandos : rechazados"
+    except IndexError as e:
+        return "Comando incorrecto"
+
 #Bucle
-print("Bienvenido")
-while(True):
-    print(">> 1. Crear una figura.\n>> 2. Ampliar el tamaño de alguna figura\n>> 3. Mover alguna figura.\n>> 4. Rotar figura. \n>> 5. Salir." )
-    ans = input(">> ")
-    if(ans == "1"):
-        nombre = input(">> Ingrese el nombre de su figura:\n>> ")
-        forma = elegir()
-        if(forma == "circulo"):
-            largo = (int) (input(">> Ingrese el radio de su figura:\n>> "))
-            ancho = 0
-        else: 
-            largo = (int) (input(">> Ingrese el largo de su figura:\n>> "))
-            ancho = (int) (input(">> Ingrese el ancho de su figura:\n>> "))
-        x = Figuras(nombre, forma, largo, ancho)
-        figuras.append(x)
-    elif(ans == "2"):
-        nombre = input(">> Ingrese el nombre de la figura:\n>> ")
-        x = buscar(nombre)
-        if(x == False):
-            print("Esa figura no existe.")
-        else:
-            fact = (int) (input(">> Ingrese el factor de cuanto la va a ampliar:\n>> "))
-            x.extend(fact)
-    elif(ans == "3"):
-        nombre = input(">> Ingrese el nombre de la figura:\n>> ")
-        x = buscar(nombre)
-        if(x == False):
-            print("Esa figura no existe.")
-        else:
-            posX = (int) (input(">> Ingrese cuanto quiere moverlo en el eje X (Positivos y negativos son validos):\n>> "))
-            posY = (int) (input(">> Ingrese cuanto quiere moverlo en el eje Y (Positivos y negativos son validos):\n>> "))
-            x.move(posX, posY)
-    elif(ans == "4"):
-        nombre = input(">> Ingrese el nombre de la figura:\n>> ")
-        x = buscar(nombre)
-        if(x == False):
-            print("Esa figura no existe.")
-        else:
-            angle = (int) (input(">> Ingrese en cuantos grados quiere girar la figura:\n>> "))
-            x.girar(angle)
-    elif(ans == "5"):
-        print(">> HASTA LUEGO")
+print("""Bienvenido
+        comandos:
+        => circle (radio) (nombre)
+        => box (largo) (ancho) (nombre)
+        => move (cordenada x) (cordenada y) (nombre de la figura)
+        => scale (factor, ej: 2) (nombre de la figura)
+        => rotate (angulo) (nombre de la figura)
+        <---------------------------------------------------------->
+        """)
+
+
+while True:
+    comandos = input("->")
+    reconocimiento = reconocer_cadena(comandos)
+    if reconocimiento == "aceptada":
+        comando = comandos.split(" ")
+        #comando[0] => comando
+        #comando[1] => radio if "circulo" | ancho if "box"
+        #comando[2] => nombre if "circulo" | alto if "box"
+        #comando[3] => nombre if "box" | nombre if "move", "scale" "rotate"
+        if comando[0] == "circle":
+            x = Figuras(comando[2], "circulo", int(comando[1]), 0)
+            figuras.append(x)
+        elif comando[0] == "box":
+            x = Figuras(comando[3], "box", int(comando[2]), int(comando[1]))
+            figuras.append(x)
+        elif comando[0] == "move":
+                x = buscar(comando[3])
+                if x != False:
+                    x.move(int(comando[1]), int(comando[2]))
+                else:
+                    print("Nombre de la figura incorrecto")
+        elif comando[0] == "scale":
+                x = buscar(comando[2])
+                if x != False:
+                    x.extend(int(comando[1]))
+                else:
+                    print("Nombre de la figura incorrecto")
+        elif comando[0] == "rotate":
+                x = buscar(comando[2])
+                if x != False:
+                    x.girar(int(comando[1]))
+                else:
+                    print("Nombre de la figura incorrecto")
+        drawAll()
+    elif comandos == "exit":
         break
     else:
-        print(">> Invalido. Intente de nuevo")
-    
-    drawAll()
+        print("Comando incorrecto")
+    print("""   Nombre   |   Forma   |
+-------------------------""")
+    for figura in figuras:
+        print(f"   {figura.nombre}   |   {figura.forma}   ")
+

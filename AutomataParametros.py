@@ -17,7 +17,8 @@ class AutomataParametros():
                 "z":"q1"
             },
             "q1":{
-                "num":"q2" #Por un numero va hacia el q2
+                "num":"q2", #Por un numero va hacia el q2
+                "-":"q1" #Por el caracter "-" vuelve al mismo estado
             },
             "q2":{
                 "num":"q2",
@@ -25,7 +26,8 @@ class AutomataParametros():
             },
             "q3":{
                 "nomb":"q4", #Por una letra del alfabeto (que representa el nombre) va hacia q4
-                "num":"q5"
+                "num":"q5",
+                "-":"q5"
             },
             "q5":{
                 "z":"q6",
@@ -48,6 +50,8 @@ class AutomataParametros():
             return self.indicidencia[estado]["num0"]
         elif caracter == " ": #Si el caracter es un espacio vacio
             return self.indicidencia[estado]["z"]
+        elif caracter == "-":
+            return self.indicidencia[estado]["-"]
         else: #Si el caracter es un letra
             return self.indicidencia[estado]["nomb"]
 
